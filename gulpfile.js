@@ -2,12 +2,19 @@ const gulp = require('gulp'),
       less = require('gulp-less')
       autoprefixer = require('gulp-autoprefixer')
       browserSync = require('browser-sync')
+      imagemin = require('gulp-imagemin')
 
 const paths = {
   html: ['./app/index.html'],
   css: ['./app/css/style.css'],
   script: ['./app/js/script.js']
 }
+
+gulp.task('imagemin', function () {
+  return gulp.src('./app/images/**/*')
+  .pipe(imagemin())
+  .pipe(gulp.dest('./dist/images'))
+})
 
 gulp.task('browserSync', function () {
   browserSync({
