@@ -1,22 +1,18 @@
-const gulp = require('gulp'),
+const {parallel, series, task, src, dest, watch} = require('gulp')
       less = require('gulp-less')
       autoprefixer = require('gulp-autoprefixer')
       browserSync = require('browser-sync')
       imagemin = require('gulp-imagemin')
+      uglify = require('gulp-uglify')
 
 const paths = {
   html: ['./app/index.html'],
-  css: ['./app/css/style.css'],
-  script: ['./app/js/script.js']
+  less: ['./app/css/**/*.less'],
+  js: ['./app/js/**/*.js'],
+  images: ['./app/images/**/*']
 }
 
-gulp.task('imagemin', function () {
-  return gulp.src('./app/images/**/*')
-  .pipe(imagemin())
-  .pipe(gulp.dest('./dist/images'))
-})
-
-gulp.task('browserSync', function () {
+task('browserSync', function () {
   browserSync({
     server: {
       baseDir: './dist'
@@ -27,26 +23,45 @@ gulp.task('browserSync', function () {
   })
 })
 
-gulp.task('less', function () {
-  return gulp.src('./app/css/**/*.less')
-  .pipe(less())
-  .pipe(autoprefixer({
-    overrideBrowserslist: ['last 2 versions'],
-    cascade: false
-  }))
-  .pipe(gulp.dest('./dist/css'))
-  .pipe(browserSync.reload({stream:true}))
+function browserSyncReload(done) {
+  browsersync.reload();
+  done();
+}
+
+task('imagemin', function () {
+  return src(paths.images)
+    .pipe(imagemin())
+    .pipe(dest('./dist/images'))
 })
 
-gulp.task('html', function () {
-  return gulp.src('./app/index.html')
-  .pipe(gulp.dest('./dist'))
-  .pipe(browserSync.reload({stream:true}))
+task('less', function () {
+  return src(paths.less)
+    .pipe(less())
+    .pipe(autoprefixer({
+      overrideBrowserslist: ['last 2 versions'],
+      cascade: false
+    }))
+    .pipe(dest('./dist/css'))
+    .pipe(browserSync.stream())
 })
 
-gulp.task('watcher', function () {
-  gulp.watch('./app/css/**/*.less', gulp.parallel('less'))
-  gulp.watch('./app/index.html', gulp.parallel('html'))
+task('minjs', function () {
+  return src(paths.js)
+    .pipe(uglify())
+    .pipe(dest('./dist/js'))
+    .pipe(browserSync.stream())
 })
 
-gulp.task('default', gulp.parallel('watcher', 'browserSync'))
+task('html', function () {
+  return src(paths.html)
+    .pipe(dest('./dist'))
+    .pipe(browserSync.stream())
+})
+
+task('watcher', function () {
+  watch(paths.less, series('less'))
+  watch(paths.html, series('html'))
+  watch(paths.js, series('minjs'))
+})
+
+task('default', parallel('html', 'less', 'minjs', 'imagemin', 'watcher', 'browserSync'))
