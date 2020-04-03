@@ -22,22 +22,20 @@
 
 # Структура файлов
 
-`
-gulp-starter
-├── app
-│   ├── images
-│   ├── js
-│   ├── less
-│   └── index.html
-├── dist
-│   ├── images
-│   ├── js
-│   ├── css
-│   └── index.html
-├── gulpfile.js
-├── package.json
-└── .gitignore
-`
+    gulp-starter
+    ├── app
+    │   ├── images
+    │   ├── js
+    │   ├── less
+    │   └── index.html
+    ├── dist
+    │   ├── images
+    │   ├── js
+    │   ├── css
+    │   └── index.html
+    ├── gulpfile.js
+    ├── package.json
+    └── .gitignore
 
 - app ── рабочая папка
   - images ── изображения до сжатия
