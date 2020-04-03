@@ -4,6 +4,7 @@ const {parallel, series, task, src, dest, watch} = require('gulp')
       browserSync = require('browser-sync')
       imagemin = require('gulp-imagemin')
       uglify = require('gulp-uglify')
+      concat = require('gulp-concat')
 
 const paths = {
   html: ['./app/index.html'],
@@ -41,6 +42,7 @@ task('less', function () {
       overrideBrowserslist: ['last 2 versions'],
       cascade: false
     }))
+    .pipe(concat('style.css'))
     .pipe(dest('./dist/css'))
     .pipe(browserSync.stream())
 })
@@ -48,6 +50,7 @@ task('less', function () {
 task('minjs', function () {
   return src(paths.js)
     .pipe(uglify())
+    .pipe(concat('script.js'))
     .pipe(dest('./dist/js'))
     .pipe(browserSync.stream())
 })
