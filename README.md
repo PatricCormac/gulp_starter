@@ -22,6 +22,7 @@
 
 # Структура файлов
 
+`
 gulp-starter
 ├── app
 │   ├── images
@@ -36,6 +37,7 @@ gulp-starter
 ├── gulpfile.js
 ├── package.json
 └── .gitignore
+`
 
 - app ── рабочая папка
   - images ── изображения до сжатия
