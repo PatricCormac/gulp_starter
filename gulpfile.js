@@ -1,10 +1,11 @@
-const {parallel, series, task, src, dest, watch} = require('gulp')
+let {parallel, task, src, dest, watch} = require('gulp')
       less = require('gulp-less')
       autoprefixer = require('gulp-autoprefixer')
       browserSync = require('browser-sync')
       imagemin = require('gulp-imagemin')
       uglify = require('gulp-uglify')
       concat = require('gulp-concat')
+      del = require('del')
 
 const paths = {
   html: ['./app/index.html'],
@@ -12,6 +13,10 @@ const paths = {
   js: ['./app/js/**/*.js'],
   images: ['./app/images/**/*']
 }
+
+task('clean', async function () {
+  del.sync('dist')
+})
 
 task('browserSync', function () {
   browserSync({
@@ -39,7 +44,7 @@ task('less', function () {
   return src(paths.less)
     .pipe(less())
     .pipe(autoprefixer({
-      overrideBrowserslist: ['last 2 versions'],
+      overrideBrowserslist: ['last 8 versions'],
       cascade: false
     }))
     .pipe(concat('style.css'))
@@ -49,8 +54,8 @@ task('less', function () {
 
 task('minjs', function () {
   return src(paths.js)
-    .pipe(uglify())
     .pipe(concat('script.js'))
+    .pipe(uglify())
     .pipe(dest('./dist/js'))
     .pipe(browserSync.stream())
 })
@@ -61,10 +66,10 @@ task('html', function () {
     .pipe(browserSync.stream())
 })
 
-task('watcher', function () {
-  watch(paths.less, series('less'))
-  watch(paths.html, series('html'))
-  watch(paths.js, series('minjs'))
+task('watch', function () {
+  watch(paths.less, parallel('less'))
+  watch(paths.html, parallel('html'))
+  watch(paths.js, parallel('minjs'))
 })
 
-task('default', parallel('html', 'less', 'minjs', 'imagemin', 'watcher', 'browserSync'))
+task('default', parallel('html', 'less', 'minjs', 'imagemin', 'browserSync', 'watch'))
