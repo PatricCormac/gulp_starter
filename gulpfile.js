@@ -9,7 +9,7 @@ let {parallel, task, src, dest, watch} = require('gulp')
 
 const paths = {
   html: ['./app/index.html'],
-  less: ['./app/css/**/*.less'],
+  less: ['./app/less/**/*.less'],
   js: ['./app/js/**/*.js'],
   images: ['./app/images/**/*']
 }
