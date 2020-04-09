@@ -41,13 +41,12 @@ task('imagemin', function () {
 })
 
 task('less', function () {
-  return src(paths.less)
+  return src('./app/less/style.less')
     .pipe(less())
     .pipe(autoprefixer({
       overrideBrowserslist: ['last 8 versions'],
       cascade: false
     }))
-    .pipe(concat('style.css'))
     .pipe(dest('./dist/css'))
     .pipe(browserSync.stream())
 })
